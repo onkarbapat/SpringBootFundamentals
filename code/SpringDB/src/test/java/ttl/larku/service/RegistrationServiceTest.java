@@ -5,9 +5,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.IfProfileValue;
+import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import ttl.larku.MyProfileValueSource;
 import ttl.larku.dao.WhichDB;
 import ttl.larku.domain.Course;
 import ttl.larku.domain.ScheduledClass;
@@ -21,8 +24,8 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-//@ProfileValueSourceConfiguration(MyProfileValueSource.class)
-//@IfProfileValue(name = "spring.profiles.active", value = "development")
+@ProfileValueSourceConfiguration(MyProfileValueSource.class)
+@IfProfileValue(name = "spring.profiles.active", value = "development")
 //@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Sql(scripts = {"/ttl/larku/db/createDB-" + WhichDB.value + ".sql",
         "/ttl/larku/db/populateDB-" + WhichDB.value + ".sql"},

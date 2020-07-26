@@ -2,12 +2,8 @@ package ttl.larku;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
-
 import ttl.larku.dao.BaseDAO;
 import ttl.larku.dao.inmemory.InMemoryClassDAO;
 import ttl.larku.dao.inmemory.InMemoryCourseDAO;
@@ -25,6 +21,7 @@ import ttl.larku.service.StudentService;
 
 @Configuration
 @PropertySource({"classpath:/larkUContext.properties"})
+@ComponentScan({"ttl.larku.service"})
 public class LarkUConfig {
 
     @Autowired

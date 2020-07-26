@@ -3,11 +3,10 @@ package ttl.larku.dao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import ttl.larku.dao.repository.ClassRepo;
-import ttl.larku.dao.repository.CourseRepo;
 import ttl.larku.domain.Course;
 import ttl.larku.domain.ScheduledClass;
 import ttl.larku.domain.Student;
@@ -18,7 +17,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@DataJpaTest
 @Sql(scripts = {"/schema-h2production.sql", "/data-h2production.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 //@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -46,15 +46,11 @@ public class ClassRepoTest {
     @Resource(name = "classRepo")
     private ClassRepo dao;
 
-    @Resource(name = "courseRepo")
-    private CourseRepo courseDAO;
 
     @Before
     public void setup() {
         course1 = new Course(code1, title1);
-        course1 = courseDAO.save(course1);
         course2 = new Course(code2, title2);
-        course2 = courseDAO.save(course2);
 
         class1 = new ScheduledClass(course1, startDate1, endDate1);
         class2 = new ScheduledClass(course2, startDate2, endDate2);

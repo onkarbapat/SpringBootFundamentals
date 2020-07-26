@@ -2,7 +2,6 @@ package ttl.larku.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ttl.larku.controllers.rest.StudentRestController;
 import ttl.larku.dao.BaseDAO;
 import ttl.larku.domain.Student;
 import ttl.larku.domain.Student.Status;
@@ -15,9 +14,6 @@ public class StudentService {
 
     @Autowired
     private BaseDAO<Student> studentDAO;
-
-    @Autowired
-    private StudentRestController controller;
 
     public Student createStudent(String name) {
         Student student = new Student(name);

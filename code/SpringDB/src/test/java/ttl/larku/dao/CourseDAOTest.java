@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-
 //Populate your DB.  You can either do this or the schema[-XXX].sql and data[-XXX].sql files
 //and @DirtiesContext as below
 @Sql(scripts = {"/ttl/larku/db/createDB-h2.sql", "/ttl/larku/db/populateDB-h2.sql"},

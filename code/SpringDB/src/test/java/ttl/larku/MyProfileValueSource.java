@@ -1,6 +1,5 @@
 package ttl.larku;
 
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -22,12 +21,9 @@ import java.util.Properties;
 @Component
 public class MyProfileValueSource implements ProfileValueSource {
 
-    private static Resource resource;
     private static Properties props;
-    private final Environment env;
 
-    public MyProfileValueSource(Environment env) {
-        this.env = env;
+    public MyProfileValueSource() {
     }
 
     static {
@@ -35,7 +31,7 @@ public class MyProfileValueSource implements ProfileValueSource {
     }
 
     public static void init() {
-        resource = new ClassPathResource("application.properties");
+        Resource resource = new ClassPathResource("application.properties");
         try {
             props = PropertiesLoaderUtils.loadProperties(resource);
         } catch (Exception e) {
@@ -45,7 +41,6 @@ public class MyProfileValueSource implements ProfileValueSource {
 
     @Override
     public String get(String property) {
-
         String result = props.getProperty(property);
         return result;
     }

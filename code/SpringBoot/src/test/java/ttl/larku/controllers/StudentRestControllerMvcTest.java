@@ -1,5 +1,6 @@
 package ttl.larku.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -24,8 +25,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -125,6 +126,98 @@ public class StudentRestControllerMvcTest {
         System.out.println("resp = " + jsonString);
 
     }
+
+    @Test
+    public void testUpdateStudentGood() throws Exception {
+
+        ResultActions actions = mockMvc
+                .perform(get("/adminrest/student/{id}", goodStudentId)
+                        .accept(MediaType.APPLICATION_JSON));
+        String jsonString = actions.andReturn().getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+
+        JsonNode node = mapper.readTree(jsonString).path("entity");
+
+        Student student = mapper.treeToValue(node, Student.class);
+
+        student.setPhoneNumber("202 383-9393");
+        String updatedJson = mapper.writeValueAsString(student);
+
+        ResultActions putActions = mockMvc.perform(put("/adminrest/student/")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updatedJson));
+
+        putActions = putActions.andExpect(status().isNoContent());
+
+        MvcResult result = actions.andReturn();
+
+        ResultActions postPutActions = mockMvc
+                .perform(get("/adminrest/student/{id}", goodStudentId)
+                        .accept(MediaType.APPLICATION_JSON));
+        String postJson = postPutActions.andReturn().getResponse().getContentAsString();
+
+        Student postStudent = mapper.treeToValue(mapper.readTree(postJson).path("entity"), Student.class);
+        assertEquals("202 383-9393", postStudent.getPhoneNumber());
+    }
+
+    @Test
+    public void testUpdateStudentBad() throws Exception {
+
+        ResultActions actions = mockMvc
+                .perform(get("/adminrest/student/{id}", goodStudentId)
+                        .accept(MediaType.APPLICATION_JSON));
+        String jsonString = actions.andReturn().getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+
+        JsonNode node = mapper.readTree(jsonString).path("entity");
+
+        Student student = mapper.treeToValue(node, Student.class);
+        student.setId(badStudentId);
+
+        student.setPhoneNumber("202 383-9393");
+        String updatedJson = mapper.writeValueAsString(student);
+
+        ResultActions putActions = mockMvc.perform(put("/adminrest/student/")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updatedJson));
+
+        putActions = putActions.andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    public void testDeleteStudentGood() throws Exception {
+
+        ResultActions actions = mockMvc
+                .perform(get("/adminrest/student/{id}", goodStudentId)
+                        .accept(MediaType.APPLICATION_JSON));
+        String jsonString = actions.andReturn().getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+
+        ResultActions deleteActions = mockMvc.perform(delete("/adminrest/student/{id}", goodStudentId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        deleteActions = deleteActions.andExpect(status().isNoContent());
+
+        ResultActions postDeleteActions = mockMvc
+                .perform(get("/adminrest/student/{id}", goodStudentId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        postDeleteActions = postDeleteActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testDeleteStudentBad() throws Exception {
+
+        ResultActions actions = mockMvc
+                .perform(delete("/adminrest/student/{id}", badStudentId)
+                        .accept(MediaType.APPLICATION_JSON));
+        actions.andExpect(status().isBadRequest());
+    }
+
 
     @Test
     public void testGetAllStudentsGood() throws Exception {

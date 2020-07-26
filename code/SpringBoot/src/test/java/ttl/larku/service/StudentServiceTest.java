@@ -3,7 +3,9 @@ package ttl.larku.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import ttl.larku.domain.Student;
 import ttl.larku.domain.Student.Status;
@@ -15,6 +17,14 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+//This will make spring create *only* the classes we need for the
+//test.  Small context == faster running time, specially if we want
+//to Dirty the context before each test.
+//@ContextConfiguration(classes = {LarkUConfig.class, LarkUTestDataConfig.class})
+//@ActiveProfiles("development")
+//@Import({StudentService.class, JPAStudentDAO.class, InMemoryStudentDAO.class})
+
+
 public class StudentServiceTest {
 
     private String name1 = "Bloke";
@@ -25,6 +35,9 @@ public class StudentServiceTest {
 
     @Resource(name = "studentService")
     private StudentService studentService;
+
+    @Autowired
+    private ApplicationContext context;
 
     @Before
     public void setup() {
@@ -38,6 +51,8 @@ public class StudentServiceTest {
         Student newStudent = studentService.createStudent(name1, phoneNumber1, Status.FULL_TIME);
 
         Student result = studentService.getStudent(newStudent.getId());
+
+        System.out.println("result: " + result);
 
         assertTrue(result.getName().contains(name1));
         assertEquals(1, studentService.getAllStudents().size());

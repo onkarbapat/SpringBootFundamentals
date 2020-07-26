@@ -80,7 +80,7 @@ class ApplicationCommandLineRunner implements ApplicationRunner {
 
         List<String> optionValues = args.getOptionValues("verbose");
         System.out.println("debug optionValue");
-        optionValues.forEach(System.out::println);
+        if(optionValues != null) optionValues.forEach(System.out::println);
     }
 }
 
